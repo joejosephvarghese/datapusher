@@ -1,7 +1,7 @@
 const express = require("express");
 const helmet = require("helmet");
-const morgan = require('./config/morgan');
-const { helmetConfig ,environment} = require("../src/config/config");
+const morgan = require("./config/morgan");
+const { helmetConfig, environment } = require("../src/config/config");
 const routes = require("./routes/v1");
 const sequelize = require("../src/models/connection");
 const logger = require("./config/logger");
@@ -15,7 +15,7 @@ app.use(helmet(helmetConfig));
 
 app.use(express.json());
 
-if (environment.node !== 'test') {
+if (environment.node !== "test") {
   app.use(morgan.successHandler);
   app.use(morgan.errorHandler);
 }
@@ -24,7 +24,6 @@ sequelize
   .authenticate()
   .then(() => logger.info("Connected to postgres"))
   .catch((err) => console.error("Error: " + err));
-
 
 app.use("/v1", routes);
 

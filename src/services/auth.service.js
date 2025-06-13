@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const ApiError = require("../utils/apiError");
 const { v4: uuidv4 } = require("uuid");
 const { StatusCodes } = require("http-status-codes");
+const catchAsync = require("../utils/catchAsync");
 
 const registerUser = async ({ name, email, password, role }) => {
   const userExists = await User.findOne({ where: { email } });
@@ -26,6 +27,10 @@ const registerUser = async ({ name, email, password, role }) => {
   return userWithoutPassword;
 };
 
+const findByEmail = async (email) => {
+  return await User.findOne({ where: { email } });
+};
 module.exports = {
   registerUser,
+  findByEmail
 };
