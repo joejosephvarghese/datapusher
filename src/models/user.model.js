@@ -46,14 +46,7 @@ const User = sequelize.define('User', {
   },
 }, {
   timestamps: true,
-  // hooks: {
-  //   // Hook to hash the password before saving
-  //   beforeSave: async (user, options) => {
-  //     if (user.changed('password')) {
-  //       user.password = await bcrypt.hash(user.password, 8);
-  //     }
-  //   },
-  // },
+
 });
 
 // Apply paginate plugin to the User model

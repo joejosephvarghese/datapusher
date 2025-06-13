@@ -1,12 +1,23 @@
 const express = require('express');
 const router = express.Router();
+const {accountController} = require('../../controllers');
 
-const{accountController}  = require("../../controllers");
-const authMiddleware = require("../../middleware/authMiddleware");
+// Create an account
+router.post('/', accountController.createAccount);
 
-router.use(authMiddleware);
+// Get all accounts
+router.get('/', accountController.getAllAccounts);
 
+// Get a single account by ID
+router.get('/:id', accountController.getAccountById);
 
-router.post('/',accountController.createAccount);
+// Update an account by ID
+router.put('/:id', accountController.updateAccount);
+
+// Soft-delete an account by ID
+router.delete('/:id', accountController.deleteAccount);
+
+// Restore a soft-deleted account (optional)
+router.post('/:id/restore', accountController.restoreAccount);
 
 module.exports = router;
