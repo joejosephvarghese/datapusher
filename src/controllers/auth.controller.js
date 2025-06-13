@@ -30,7 +30,6 @@ const login = catchAsync(async (req, res) => {
   }
 
   const isPasswordValid = await bcrypt.compare(password, existingUser.password);
-  console.log(isPasswordValid, "isPasswordValid");
   if (!isPasswordValid) {
     throw new ApiError(StatusCodes.UNAUTHORIZED, "Invalid  password");
   }
