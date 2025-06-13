@@ -1,21 +1,17 @@
+require("dotenv").config();
+const app = require("./app");
+const logger = require("./config/logger");
 
-require('dotenv').config(); 
-const app = require('./app');
-const logger = require('./config/logger');
-
-
-const PORT = process.env.PORT || 5000; 
+const PORT = process.env.PORT || 5000;
 let server;
 app.listen(PORT, () => {
   logger.info(`Server is running on port ${PORT}`);
 });
 
-
-
 const exitHandler = () => {
   if (server) {
     server.close(() => {
-      logger.info('Server closed');
+      logger.info("Server closed");
       process.exit(1);
     });
   } else {
@@ -28,5 +24,5 @@ const unexpectedErrorHandler = (error) => {
   exitHandler();
 };
 
-process.on('uncaughtException', unexpectedErrorHandler);
-process.on('unhandledRejection', unexpectedErrorHandler);
+process.on("uncaughtException", unexpectedErrorHandler);
+process.on("unhandledRejection", unexpectedErrorHandler);
