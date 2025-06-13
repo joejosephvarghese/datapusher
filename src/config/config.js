@@ -11,6 +11,10 @@ module.exports.dbConfig = {
   
 };
 
+module.exports.environment = {
+  node: process.env.NODE_ENV || 'development',
+};
+
 module.exports.jwtConfig={
 jwt:process.env.JWT_SECRET
 }
