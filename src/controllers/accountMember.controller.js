@@ -134,10 +134,66 @@ console.log(req.body,"jksdjfljfdls")
   });
 });
 
+const removeTheUser = catchAsync(async (req, res) => {
+  const adminId = req.user.id
+  const { account_id } = req.params;
+  const { removeUser } = req.body; 
+
+  // Ensure required data is present
+  if (!removeUser) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, "Missing removeUser in request body");
+  }
+
+  // Check if the requester is an Admin in this account
+
+  console.log(adminId,"admin ID")
+    console.log(account_id,"accoiutn id")
+  const isAdmin = await AccountMember.findOne({
+    where: {
+      user_id: adminId,
+      account_id: account_id,
+      role: "admin",
+    },
+  });
+  console.log(isAdmin,"dd")
+
+  if (isAdmin===null) {
+    throw new ApiError(
+      StatusCodes.FORBIDDEN,
+      "You are not authorized to remove members from this account"
+    );
+  }
+
+  // Do not allow admin to remove themselves
+  if (adminId === removeUser) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, "You cannot remove yourself");
+  }
+
+  // Remove the user from the account
+  const deleted = await AccountMember.destroy({
+    where: {
+      user_id: removeUser,
+      account_id: account_id,
+    },
+  });
+
+  if (deleted === 0) {
+    throw new ApiError(
+      StatusCodes.NOT_FOUND,
+      "Member not found or already removed"
+    );
+  }
+
+  res.status(StatusCodes.OK).json({
+    message: "Member removed successfully",
+  });
+});
+
 
 module.exports = {
   inviteUser,
   getMembersByAccount,
   getMemberById,
-  updateMemberById
+  updateMemberById,
+  removeTheUser
 };
