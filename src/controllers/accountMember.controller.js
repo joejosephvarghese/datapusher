@@ -98,8 +98,46 @@ const getMemberById = catchAsync(async (req, res) => {
   res.status(StatusCodes.OK).json(member);
 });
 
+const updateMemberById = catchAsync(async (req, res) => {
+  const userId = req.user.id;
+  const { account_id, accountmember_id } = req.params;
+console.log(req.body,"jksdjfljfdls")
+  // Optional: Check if user is authorized to update members in this account
+
+  const isMember = await AccountMember.findOne({
+    where: {
+      user_id: userId,
+      account_id: account_id,
+      role:"Admin"
+    },
+  });
+
+  if (!isMember) {
+    throw new ApiError(StatusCodes.FORBIDDEN, "You are not authorized to update members of this account");
+  }
+
+  const [updatedCount, updatedRows] = await AccountMember.update(req.body, {
+    where: {
+      id: accountmember_id,
+      account_id: account_id,
+    },
+    returning: true,
+  });
+
+  if (updatedCount === 0) {
+    throw new ApiError(StatusCodes.NOT_FOUND, "Member not found or update failed");
+  }
+
+  res.status(StatusCodes.OK).json({
+    success: true,
+    data: updatedRows[0],
+  });
+});
+
+
 module.exports = {
   inviteUser,
   getMembersByAccount,
   getMemberById,
+  updateMemberById
 };
