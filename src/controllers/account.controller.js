@@ -12,6 +12,9 @@ const createAccount = catchAsync(async (req, res) => {
     updated_by: created_by,
   });
 
+  await accountService.updateAccountRole
+(account.account_id,created_by,"admin")
+
   res.status(StatusCodes.CREATED).json(account);
 });
 

@@ -1,4 +1,4 @@
-const { Account } = require("../models");
+const { Account,AccountMember } = require("../models");
 const ApiError = require("../utils/apiError");
 const { StatusCodes } = require("http-status-codes");
 
@@ -16,6 +16,7 @@ const createAccount = async (accountData) => {
   const existing = await Account.findOne({
     where: { account_name: filteredData.account_name },
   });
+  console.log(existing,"jhkj")
   if (existing) {
     throw new ApiError(StatusCodes.CONFLICT, "Account name already exists");
   }
@@ -78,6 +79,29 @@ const restoreAccount = async (id) => {
   return account;
 };
 
+
+const updateAccountRole = async (accountId, userId, role) => {
+  // Check if user already has a membership for this account
+  const member = await AccountMember.findOne({
+    where: {
+      account_id: accountId,
+      user_id: userId,
+    },
+  });
+
+  if (member) {
+    // Update the existing role
+    await member.update({ role });
+  } else {
+    // Create a new membership with the specified role
+    await AccountMember.create({
+      account_id: accountId,
+      user_id: userId,
+      role,
+    });
+  }
+};
+
 module.exports = {
   createAccount,
   getAllAccounts,
@@ -85,4 +109,5 @@ module.exports = {
   updateAccount,
   deleteAccount,
   restoreAccount,
+  updateAccountRole
 };
