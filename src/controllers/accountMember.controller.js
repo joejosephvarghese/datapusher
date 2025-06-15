@@ -42,6 +42,64 @@ const inviteUser = catchAsync(async (req, res) => {
   });
 });
 
+const getMembersByAccount = catchAsync(async (req, res) => {
+  const { account_id } = req.params;
+  const { page, limit } = req.query; // Default values if not provided
+
+  if (!account_id) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, "Account ID is required");
+  }
+
+  const filter = { account_id }; // Filter members by account_id
+  const options = {
+    page: parseInt(page, 10),
+    limit: parseInt(limit, 10),
+  };
+
+  const members = await AccountMember.paginate(filter, options);
+
+  res.status(StatusCodes.OK).json(members);
+});
+
+const getMemberById = catchAsync(async (req, res) => {
+  const userId = req.user.id;
+  const { account_id, accountmember_id } = req.params;
+
+  // Step 1: Check if user is part of this account
+  const isMember = await AccountMember.findOne({
+    where: {
+      user_id: userId,
+      account_id: account_id,
+    },
+  });
+
+  if (!isMember) {
+    throw new ApiError(
+      StatusCodes.FORBIDDEN,
+      "You are not a member of this account"
+    );
+  }
+
+  // Step 2: Fetch the member info for the given ID within this account
+  const member = await AccountMember.findOne({
+    where: {
+      id: accountmember_id,
+      account_id: account_id,
+    },
+  });
+
+  if (!member) {
+    throw new ApiError(
+      StatusCodes.NOT_FOUND,
+      "Member not found in this account"
+    );
+  }
+
+  res.status(StatusCodes.OK).json(member);
+});
+
 module.exports = {
   inviteUser,
+  getMembersByAccount,
+  getMemberById,
 };

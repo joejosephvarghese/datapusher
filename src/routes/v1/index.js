@@ -19,7 +19,7 @@ const defaultRoutes = [
     route: destinationRoute
   },
      {
-    path: "/accountMember",
+    path: "/accountmember",
     route: accountMember
   },
 ];

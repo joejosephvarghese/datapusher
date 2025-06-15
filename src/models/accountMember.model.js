@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../models/connection");
+const paginate = require("../models/plugins/paginate.plugin");
 
 const AccountMember = sequelize.define(
   "AccountMember",
@@ -30,10 +31,10 @@ const AccountMember = sequelize.define(
       onDelete: "CASCADE",
     },
 
-role: {
-  type: DataTypes.STRING,
-  allowNull: false,
-},
+    role: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
   },
   {
     tableName: "account_members",
@@ -45,7 +46,6 @@ role: {
 AccountMember.associate = (models) => {
   AccountMember.belongsTo(models.Account, { foreignKey: "account_id" });
   AccountMember.belongsTo(models.User, { foreignKey: "user_id" });
- 
 };
-
+paginate(AccountMember);
 module.exports = AccountMember;

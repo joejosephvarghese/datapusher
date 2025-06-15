@@ -6,6 +6,13 @@ const authMiddleware = require("../../middleware/authMiddleware");
 router.use(authMiddleware);
 // Create an account
 router.post('/invite', accountMemberController.inviteUser);
+router.get('/account/:account_id/member/:accountmember_id', accountMemberController.getMemberById);
+
+router.get('/account/:account_id', accountMemberController.getMembersByAccount);
+
+
+
+
 
 
 
